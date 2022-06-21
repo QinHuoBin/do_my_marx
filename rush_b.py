@@ -18,7 +18,7 @@ def check_answer(a1: str, a2: str):
     return False
 
 
-do_what = "马克思主义基本原理题库.json"
+do_what = "毛泽东思想和中国特色社会主义理论体系概论题库.json"
 problems = []
 
 # 跳过个数
@@ -32,7 +32,7 @@ do_clear = False
 
 
 def save_exit(signum, frame):
-    with open("process.json", "w") as f:
+    with open("process.json", "w", encoding='UTF-8') as f:
         f.write(json.dumps(problems, ensure_ascii=False))
     exit(0)
 
@@ -40,7 +40,7 @@ def save_exit(signum, frame):
 signal.signal(signal.SIGINT, save_exit)
 signal.signal(signal.SIGTERM, save_exit)
 if os.path.exists("process.json"):
-    with open("process.json", "r") as f:
+    with open("process.json", "r", encoding='UTF-8') as f:
         problems = json.loads(f.read())
 else:
     with open(do_what, "r", encoding='UTF-8') as f:
@@ -60,7 +60,7 @@ for pid, problem in enumerate(problems):
             continue
     except KeyError:
         pass
-    print("[%s]第%d题：\n" % (problem['type'].replace("题", ""), pid))
+    print("[%s]第%d题：\n" % (problem['type'].replace("题", ""), pid + 1))
     print(problem['problem'])
     if problem['type'] != "判断题":
         print(problem['A'])
@@ -69,11 +69,11 @@ for pid, problem in enumerate(problems):
         print(problem['D'])
     my_answer = input()
     if my_answer.upper() == "SAVE":
-        with open("process.json", "w") as f:
+        with open("process.json", "w", encoding='UTF-8') as f:
             f.write(json.dumps(problems, ensure_ascii=False))
         my_answer = input()
     if my_answer.upper() == "QUIT":
-        with open("process.json", "w") as f:
+        with open("process.json", "w", encoding='UTF-8') as f:
             f.write(json.dumps(problems, ensure_ascii=False))
         exit(0)
     problems[pid]['my_answer'] = my_answer
