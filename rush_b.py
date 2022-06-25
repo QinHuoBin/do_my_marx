@@ -2,6 +2,7 @@ import os
 import json
 import signal
 import time
+import platform
 
 
 def check_answer(a1: str, a2: str):
@@ -30,7 +31,7 @@ error_threshold = 1
 # 是否清屏
 # do_clear = False
 do_clear = True
-
+clear_command = "cls" if platform.system() == 'Windows' else  "clear"
 
 def save_exit(signum, frame):
     with open("process.json", "w", encoding='UTF-8') as f:
@@ -95,4 +96,4 @@ for pid, problem in enumerate(problems):
 
     if do_clear:
         time.sleep(1)
-        os.system("cls")
+        os.system(clear_command)
