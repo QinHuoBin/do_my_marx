@@ -28,7 +28,8 @@ only_do_error = False
 # 错误阈值
 error_threshold = 1
 # 是否清屏
-do_clear = False
+# do_clear = False
+do_clear = True
 
 
 def save_exit(signum, frame):
@@ -68,6 +69,7 @@ for pid, problem in enumerate(problems):
         print(problem['C'])
         print(problem['D'])
     my_answer = input()
+    my_answer = "".join((lambda x:(x.sort(),x)[1])(list(my_answer)))
     if my_answer.upper() == "SAVE":
         with open("process.json", "w", encoding='UTF-8') as f:
             f.write(json.dumps(problems, ensure_ascii=False))
@@ -77,11 +79,9 @@ for pid, problem in enumerate(problems):
             f.write(json.dumps(problems, ensure_ascii=False))
         exit(0)
     problems[pid]['my_answer'] = my_answer
+
     if check_answer(problem['answer'], my_answer):
         print("\033[32m答对了！\033[0m\n\n\n")
-        if do_clear:
-            time.sleep(1)
-            os.system("clear")
     else:
         print("\033[31m答错了！\033[0m")
         print("正确答案：\033[32m" + problem['answer'] + "\033[0m")
@@ -92,5 +92,7 @@ for pid, problem in enumerate(problems):
             problems[pid]['error_times'] = 1
         input()
         print("\n\n\n")
-        if do_clear:
-            os.system("clear")
+
+    if do_clear:
+        time.sleep(1)
+        os.system("cls")
