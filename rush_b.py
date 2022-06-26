@@ -31,7 +31,12 @@ error_threshold = 1
 # 是否清屏
 # do_clear = False
 do_clear = True
-clear_command = "cls" if platform.system() == 'Windows' else  "clear"
+
+# custom
+clear_command = "cls" if platform.system() == 'Windows' else "clear"
+input_hint = "\033[34m>>\033[0m "
+blank = "\n\n\n"
+
 
 def save_exit(signum, frame):
     with open("process.json", "w", encoding='UTF-8') as f:
@@ -62,38 +67,41 @@ for pid, problem in enumerate(problems):
             continue
     except KeyError:
         pass
-    print("[%s]第%d题：\n" % (problem['type'].replace("题", ""), pid + 1))
+    print("\033[34m[%s]\033[0m 第%d题：\n" %
+          (problem['type'].replace("题", ""), pid + 1))
     print(problem['problem'])
     if problem['type'] != "判断题":
         print(problem['A'])
         print(problem['B'])
         print(problem['C'])
         print(problem['D'])
-    my_answer = input()
-    my_answer = "".join((lambda x:(x.sort(),x)[1])(list(my_answer)))
+    my_answer = input(input_hint)
     if my_answer.upper() == "SAVE":
         with open("process.json", "w", encoding='UTF-8') as f:
             f.write(json.dumps(problems, ensure_ascii=False))
-        my_answer = input()
+        my_answer = input(input_hint)
     if my_answer.upper() == "QUIT":
         with open("process.json", "w", encoding='UTF-8') as f:
             f.write(json.dumps(problems, ensure_ascii=False))
         exit(0)
+
+    my_answer = "".join((lambda x: (x.sort(), x)[1])(list(my_answer)))
     problems[pid]['my_answer'] = my_answer
 
     if check_answer(problem['answer'], my_answer):
-        print("\033[32m答对了！\033[0m\n\n\n")
+        print("\033[32m答对了！\033[0m")
     else:
         print("\033[31m答错了！\033[0m")
         print("正确答案：\033[32m" + problem['answer'] + "\033[0m")
-        print("我的答案：\033[31m" + my_answer + "\033[0m")
+        print("我的答案：\033[31m" + my_answer + "\033[0m", end='')
         try:
             problems[pid]['error_times'] += 1
         except KeyError:
             problems[pid]['error_times'] = 1
         input()
-        print("\n\n\n")
 
     if do_clear:
         time.sleep(1)
         os.system(clear_command)
+    else:
+        print(blank)
