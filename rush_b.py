@@ -105,3 +105,8 @@ for pid, problem in enumerate(problems):
         os.system(clear_command)
     else:
         print(blank)
+
+    if pid == len(problems) - 1:
+        with open("process.json", "w", encoding='UTF-8') as f:
+            f.write(json.dumps(problems, ensure_ascii=False))
+        exit(0)
