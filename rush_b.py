@@ -57,6 +57,9 @@ else:
         problems = json.loads(f.read())
 
 for pid, problem in enumerate(problems):
+    if pid == len(problems) - 1:
+        with open("process.json", "w", encoding='UTF-8') as f:
+            f.write(json.dumps(problems, ensure_ascii=False))
     if pid < bypass_count:
         continue
     if only_do_error:
@@ -114,4 +117,3 @@ for pid, problem in enumerate(problems):
     if (auto_save and finish_cnt % 20 == 0) or pid == len(problems) - 1:
         with open("process.json", "w", encoding='UTF-8') as f:
             f.write(json.dumps(problems, ensure_ascii=False))
-        exit(0)
