@@ -25,7 +25,7 @@ problems = []
 # 跳过个数
 bypass_count = 0
 # 只做错题？
-only_do_error = False
+only_do_error = True
 # 错误阈值
 error_threshold = 1
 # 是否清屏
@@ -36,6 +36,9 @@ do_clear = True
 clear_command = "cls" if platform.system() == 'Windows' else "clear"
 input_hint = "\033[34m>>\033[0m "
 blank = "\n\n\n"
+
+auto_save = True
+finish_cnt = 0
 
 
 def save_exit(signum, frame):
@@ -106,7 +109,9 @@ for pid, problem in enumerate(problems):
     else:
         print(blank)
 
-    if pid == len(problems) - 1:
+    finish_cnt += 1
+
+    if (auto_save and finish_cnt % 20 == 0) or pid == len(problems) - 1:
         with open("process.json", "w", encoding='UTF-8') as f:
             f.write(json.dumps(problems, ensure_ascii=False))
         exit(0)
