@@ -25,17 +25,17 @@ problems = []
 # 跳过个数
 bypass_count = 0
 # 只做错题？
-only_do_error = True
+only_do_error = False
 # 错误阈值
 error_threshold = 1
 # 是否清屏
-# do_clear = False
-do_clear = True
+do_clear = False
+# do_clear = True
 
 # custom
 clear_command = "cls" if platform.system() == 'Windows' else "clear"
 input_hint = "\033[34m>>\033[0m "
-blank = "\n\n\n"
+blank = "\n-----------------------------------------------"
 
 auto_save = True
 finish_cnt = 0
@@ -73,8 +73,18 @@ for pid, problem in enumerate(problems):
             continue
     except KeyError:
         pass
-    print("\033[34m[%s]\033[0m 第%d题：\n" %
-          (problem['type'].replace("题", ""), pid + 1))
+    type=problem['type']
+    if type=='单选题':
+        print("\033[32m[%s]\033[0m 第%d题：\n" %
+              (problem['type'].replace("题", ""), pid + 1))
+    elif type=='多选题':
+        print("\033[31m[%s]\033[0m 第%d题：\n" %
+              (problem['type'].replace("题", ""), pid + 1))
+    elif type=='判断题':
+        print("\033[36m[%s]\033[0m 第%d题：\n" %
+              (problem['type'].replace("题", ""), pid + 1))
+    else:
+        raise ValueError()
     print(problem['problem'])
     if problem['type'] != "判断题":
         print(problem['A'])
@@ -106,14 +116,20 @@ for pid, problem in enumerate(problems):
             problems[pid]['error_times'] = 1
         input()
 
+    # 记录做过的次数
+    try:
+        problems[pid]['do_times'] += 1
+    except KeyError:
+        problems[pid]['do_times'] = 1
+
     if do_clear:
-        time.sleep(1)
+        # time.sleep(1)
         os.system(clear_command)
     else:
         print(blank)
 
     finish_cnt += 1
 
-    if (auto_save and finish_cnt % 20 == 0) or pid == len(problems) - 1:
+    if (auto_save and finish_cnt % 1 == 0) or pid == len(problems) - 1:
         with open("process.json", "w", encoding='UTF-8') as f:
             f.write(json.dumps(problems, ensure_ascii=False))
